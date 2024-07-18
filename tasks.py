@@ -8,10 +8,7 @@ import os
 import requests
 from datetime import datetime
 from abc import ABC  # I'' using to specify that the class is abstract
-import logging
-
-logger = logging.getLogger(__name__)
-logging.basicConfig(filename='myapp.log', level=logging.INFO)
+from logs_handler import logger
 
 
 # Abstract class to handle the page elements with selenium
@@ -45,25 +42,25 @@ class ApNewsSite(PageElement):
         # Handling the pop-up
         try:
             self.browser.wait_until_element_is_visible('//a[@title="Close" and @class="fancybox-item fancybox-close"]',
-                                                       timeout=60)
+                                                       timeout=180)
             self.browser.click_element('//a[@title="Close" and @class="fancybox-item fancybox-close"]')
         except:
             logger.critical('There was no popup on the screen')
 
         # Opening the search bar
-        logger.debug('Opening the search bar')
+        logger.info('Opening the search bar')
         self.browser.wait_until_element_is_visible('//button[@class="SearchOverlay-search-button"]', timeout=10)
         botao = self.browser.find_element('//button[@class="SearchOverlay-search-button"]')
         botao.click()
 
         # Typing the search phrase and submitting the form
-        logger.debug('Typing the search phrase')
+        logger.info('Typing the search phrase')
         self.browser.wait_until_element_is_visible('//input[@class="SearchOverlay-search-input"]', timeout=10)
         self.browser.input_text('//input[@class="SearchOverlay-search-input"]', search_phrase)
         self.browser.click_element('//button[@class="SearchOverlay-search-submit"]')
 
         # filter by categories:
-        logger.debug('filtering by categories')
+        logger.info('filtering by categories')
         self.browser.click_element("css:.SearchFilter-heading[data-toggle-trigger='search-filter']")
         categorys_obj = self.browser.find_elements("css:.SearchFilterInput input[type='checkbox']")
         avalibles_categorys = [categorias.text for categorias in categorys_obj]
@@ -72,7 +69,7 @@ class ApNewsSite(PageElement):
             categorys_obj[category_index].click()
 
         # Find all news items
-        logger.debug('Finding all news items')
+        logger.info('Finding all news items')
         self.browser.wait_until_element_is_visible("css:.SearchResultsModule-results")
         news_part = self.browser.find_element("css:.SearchResultsModule-results")
         news_items = self.browser.find_elements("css:.PageList-items-item", news_part)
@@ -87,7 +84,7 @@ class ApNewsSite(PageElement):
         :param months_to_download: number of months for which you need to receive news
         :return: list of dictionaries with the information of the news found
         """
-        logger.debug('Treating news items')
+        logger.info('Treating news items')
         output_lines = []
         for index, item in enumerate(news_items):
             try:
@@ -99,7 +96,7 @@ class ApNewsSite(PageElement):
                 description = texto_noticia.replace(f"{title}\n", '')
 
                 if date.month > (datetime.today().month + months_to_download - 1):
-                    logger.debug('get the number of news requested')
+                    logger.info('get the number of news requested')
                     break
 
                 file_name = self.__find_and_download_image(item, index)
@@ -166,7 +163,7 @@ class ExcelHandler:
         :return:
         """
         try:
-            logger.debug('saving news to excel')
+            logger.info('saving news to excel')
             columns_order_excel = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
             columns = list(excel_lines[0].keys())
 
@@ -201,8 +198,8 @@ def task_handler():
     logger.info('Finished')
 
 
-# if __name__ == '__main__':
-#     task_handler()
+if __name__ == '__main__':
+    task_handler()
 #     ap = ApNewsSite()
 #     news = ap.get_news("Covid", category="Health", months_to_download=10)
 #     excel = ExcelHandler()
