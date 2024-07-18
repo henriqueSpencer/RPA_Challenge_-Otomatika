@@ -49,6 +49,11 @@ class ApNewsSite(PageElement):
             logger.critical('There was no popup on the screen')
 
         # Opening the search bar
+        # Click in the logo to avoid problem with banner
+        logger.info('Clicking in the logo to avoid problems with the banner')
+        self.browser.wait_until_element_is_visible(locator="xpath://a[@aria-label='home page']", timeout=10)
+        self.browser.click_element(locator="xpath://a[@aria-label='home page']")
+
         logger.info('Opening the search bar')
         self.browser.wait_until_element_is_visible('//button[@class="SearchOverlay-search-button"]', timeout=10)
         self.browser.click_element('//button[@class="SearchOverlay-search-button"]')
