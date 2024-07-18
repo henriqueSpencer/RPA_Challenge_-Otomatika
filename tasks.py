@@ -1,6 +1,8 @@
 from RPA.Browser.Selenium import Selenium
 from RPA.FileSystem import FileSystem
 from RPA.Excel.Files import Files
+from robocorp.tasks import task
+from robocorp import workitems
 import time
 import os
 import requests
@@ -187,10 +189,22 @@ class ExcelHandler:
             self.lib.save_workbook()
             self.lib.close_workbook()
 
-
-if __name__ == '__main__':
+@task
+def task_handler():
+    item = workitems.inputs.current
+    print("Received payload:", item.payload)
+    logger.info("Received payload:", item.payload)
     ap = ApNewsSite()
     news = ap.get_news("Covid", category="Health", months_to_download=10)
     excel = ExcelHandler()
     excel.save_news_to_excel(news)
     logger.info('Finished')
+
+
+if __name__ == '__main__':
+    task_handler()
+#     ap = ApNewsSite()
+#     news = ap.get_news("Covid", category="Health", months_to_download=10)
+#     excel = ExcelHandler()
+#     excel.save_news_to_excel(news)
+#     logger.info('Finished')
