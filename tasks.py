@@ -201,8 +201,8 @@ def task_handler():
     logger.info('Finished')
 
 
-if __name__ == '__main__':
-    task_handler()
+# if __name__ == '__main__':
+#     task_handler()
 #     ap = ApNewsSite()
 #     news = ap.get_news("Covid", category="Health", months_to_download=10)
 #     excel = ExcelHandler()
