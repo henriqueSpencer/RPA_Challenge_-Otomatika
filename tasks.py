@@ -49,6 +49,7 @@ class ApNewsSite(PageElement):
 
         # Opening the search bar
         logger.info('Opening the search bar')
+        time.sleep(5)
         self.browser.wait_until_element_is_visible('//button[@class="SearchOverlay-search-button"]', timeout=10)
         self.browser.click_element('//button[@class="SearchOverlay-search-button"]')
 
@@ -200,16 +201,20 @@ def task_handler():
 def handle_parametres():
     """This method will handle the parameters received from the input of the task"""
     return_info = {}
-    item = workitems.inputs.current
-    print("Received payload:", item.payload)
-    logger.info(f"Received payload: {item.payload}")
-    dict_parametres = dict(item.payload)
-    return_info['news'] = dict_parametres.get('news') if dict_parametres.get('news') is not None else 'Covid'
-    return_info['category'] = dict_parametres.get('category') if dict_parametres.get('category') is not None\
-        else "Health"
-    return_info['months_to_download'] = dict_parametres.get('months_to_download') if \
-        dict_parametres.get('months_to_download') is not None else 2
-
+    try:
+        item = workitems.inputs.current
+        print("Received payload:", item.payload)
+        logger.info(f"Received payload: {item.payload}")
+        dict_parametres = dict(item.payload)
+        return_info['news'] = dict_parametres.get('news') if dict_parametres.get('news') is not None else 'Covid'
+        return_info['category'] = dict_parametres.get('category') if dict_parametres.get('category') is not None\
+            else "Health"
+        return_info['months_to_download'] = dict_parametres.get('months_to_download') if \
+            dict_parametres.get('months_to_download') is not None else 2
+    except Exception as e:
+        return_info['news'] = 'Covid'
+        return_info['category'] = "Health"
+        return_info['months_to_download'] = 2
     return return_info
 
 # if __name__ == '__main__':
