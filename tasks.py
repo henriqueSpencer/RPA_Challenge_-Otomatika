@@ -16,6 +16,7 @@ class PageElement(ABC):
     def __init__(self):
         self.browser = Selenium()
         self.browser.open_available_browser()
+        self.browser.maximize_browser_window()
         logger.info('Opened browser')
 
 
@@ -49,7 +50,6 @@ class ApNewsSite(PageElement):
 
         # Opening the search bar
         logger.info('Opening the search bar')
-        time.sleep(5)
         self.browser.wait_until_element_is_visible('//button[@class="SearchOverlay-search-button"]', timeout=10)
         self.browser.click_element('//button[@class="SearchOverlay-search-button"]')
 
