@@ -50,8 +50,7 @@ class ApNewsSite(PageElement):
         # Opening the search bar
         logger.info('Opening the search bar')
         self.browser.wait_until_element_is_visible('//button[@class="SearchOverlay-search-button"]', timeout=10)
-        botao = self.browser.find_element('//button[@class="SearchOverlay-search-button"]')
-        botao.click()
+        self.browser.click_element('//button[@class="SearchOverlay-search-button"]')
 
         # Typing the search phrase and submitting the form
         logger.info('Typing the search phrase')
