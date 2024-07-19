@@ -1,56 +1,72 @@
 import logging
+import logging.config
+import logging.handlers
 
 logging_config = {
-
-    'version': 1,
-    'disable_existing_loggers': False, #Desabilita qualquer outro logger que n esteja
-    # 'filters': {},
-    'formatters': {
-        "simple": {
-            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s' #'%(levelname)s - %(message)s'
-        },
-        "detailed": {
-              "format": "[%(levelname)s|%(module)s|L%(lineno)d] %(asctime)s: %(message)s",
-              "datefmt": "%Y-%m-%dT%H:%M:%S%z"
-        },
-        "json": {
-              "()": "mylogger.MyJSONFormatter",
-              "fmt_keys": {
-                "level": "levelname",
-                "message": "message",
-                "timestamp": "timestamp",
-                "logger": "name",
-                "module": "module",
-                "function": "funcName",
-                "line": "lineno",
-                "thread_name": "threadName"
-              }
+  "version": 1,
+  "disable_existing_loggers": False,
+  "formatters": {
+    "simple": {
+      "format": "%(levelname)s: %(message)s"
     },
-    'handlers': {
-        "stdout": {
-            'class': 'logging.StreamHandler',
-            'level': 'WARNING',
-            'formatter': 'simple',
-            'stream': 'ext://sys.stdout'
-        },
-        "file": {
-            'class': 'logging.handlers.RotatingFileHandler',
-            'level': 'DEBUG',
-            'formatter': 'simple',
-            'stream': 'logs/my_app.log',
-            'maxBytes': 1024, #max per file
-            'backupCount': 3 #max files, dps disso ele vai apagando os mais antigos
-        }
+    "detailed": {
+      "format": "[%(levelname)s|%(module)s|L%(lineno)d] %(asctime)s: %(message)s",
+      "datefmt": "%Y-%m-%dT%H:%M:%S%z"
+    }
+  },
+  "handlers": {
+    "stderr": {
+      "class": "logging.StreamHandler",
+      "level": "WARNING",
+      "formatter": "simple",
+      "stream": "ext://sys.stderr"
     },
-    'loggers': {
-        'root': {'level': 'DEBUG', 'handlers': ['stdout']},
-    },
-
-}
+    "file": {
+      "class": "logging.handlers.RotatingFileHandler",
+      "level": "INFO",
+      "formatter": "detailed",
+      "filename": "output/my_app.log",
+      "maxBytes": 100000000,
+      "backupCount": 3
+    }
+  },
+  "loggers": {
+    "root": {
+      "level": "DEBUG",
+      "handlers": [
+        "stderr",
+        "file"
+      ]
+    }
+  }
 }
 
 
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(filename='output/logs_my_aplication.log', level=logging.INFO)
+
+
+logging.config.dictConfig(config=logging_config)
+logging.basicConfig(level="INFO")
+
+logger = logging.getLogger("my_app")  # __name__ is a common choice
+
+
+
+
+
+def main():
+    logging.basicConfig(level="INFO")
+    logger.debug("debug message", extra={"x": "hello"})
+    logger.info("info message")
+    logger.warning("warning message")
+    logger.error("error message")
+    logger.critical("critical message")
+    try:
+        1 / 0
+    except ZeroDivisionError:
+        logger.exception("exception message")
+
+
+if __name__ == "__main__":
+    main()
 
