@@ -50,9 +50,21 @@ class ApNewsSite(PageElement):
         except:
             logger.critical('There was no popup on the screen')
 
+
+        # Handling the overlay
+        try:
+            logger.info('Checking for overlay')
+            self.browser.wait_until_element_is_not_visible('//div[contains(@class, "onetrust-pc-dark-filter")]',
+                                                           timeout=30)
+            logger.info('Overlay not found or disappeared')
+        except:
+            logger.info('Overlay still present, attempting to remove it with JavaScript')
+            self.browser.execute_javascript(
+                "document.querySelector('.onetrust-pc-dark-filter').style.display = 'none';")
+
         # Opening the search bar
         logger.info('Opening the search bar')
-        self.browser.execute_javascript("window.scrollBy(0, 1000);")
+        #self.browser.execute_javascript("window.scrollBy(0, 1000);")
         logger.info('Click Button search bar')
         self.browser.wait_until_element_is_visible('//button[@class="SearchOverlay-search-button"]', timeout=10)
         self.browser.click_element('//button[@class="SearchOverlay-search-button"]')
