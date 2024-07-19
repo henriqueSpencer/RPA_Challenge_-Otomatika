@@ -110,7 +110,7 @@ class ApNewsSite(PageElement):
         """
         logger.info('Treating news items')
         output_lines = []
-        until_month = datetime.today().month - months_to_download - 1
+        until_month = datetime.today().month - months_to_download
         for index, item in enumerate(news_items):
             try:
 
