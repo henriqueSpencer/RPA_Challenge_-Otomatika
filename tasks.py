@@ -69,8 +69,6 @@ class ApNewsSite(PageElement):
         self.browser.wait_until_element_is_visible('//button[@class="SearchOverlay-search-button"]', timeout=10)
         self.browser.click_element('//button[@class="SearchOverlay-search-button"]')
 
-        self.browser.execute_javascript("arguments[0].scrollIntoView(true);", locator='//button[@class="SearchOverlay-search-button"]')
-
         # Typing the search phrase and submitting the form
         logger.info('Typing the search phrase')
         self.browser.wait_until_element_is_visible('//input[@class="SearchOverlay-search-input"]', timeout=10)
