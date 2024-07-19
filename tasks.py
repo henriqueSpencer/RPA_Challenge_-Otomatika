@@ -110,6 +110,7 @@ class ApNewsSite(PageElement):
         """
         logger.info('Treating news items')
         output_lines = []
+        until_month = datetime.today().month - months_to_download - 1
         for index, item in enumerate(news_items):
             try:
 
@@ -119,9 +120,9 @@ class ApNewsSite(PageElement):
                 date = datetime.strptime(f"{date_str} {datetime.now().year}", '%B %d %Y').date()
                 description = texto_noticia.replace(f"{title}\n", '')
 
-                if date.month > (datetime.today().month + months_to_download - 1):
+                if date.month <= until_month:
                     logger.info('get the number of news requested')
-                    break
+                    continue
 
                 file_name = self.__find_and_download_image(item, index)
 
