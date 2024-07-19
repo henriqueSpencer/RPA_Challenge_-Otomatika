@@ -24,6 +24,8 @@ class ApNewsSite(PageElement):
     def __init__(self):
         super().__init__()
         self.browser.go_to("https://apnews.com/")
+        # Open the second time to advertise be smaller
+        self.browser.go_to("https://apnews.com/")
         logger.info('Opened AP News Site')
 
     def get_news(self, search_phrase: str, category: str = None, months_to_download: int = 100) -> list[dict]:
