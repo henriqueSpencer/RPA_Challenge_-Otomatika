@@ -28,6 +28,18 @@ class ApNewsSite(PageElement):
         self.browser.go_to("https://apnews.com/")
         logger.info('Opened AP News Site')
 
+    def handle_overlay(self):
+        # Handling the overlay
+        try:
+            logger.info('Checking for overlay')
+            self.browser.wait_until_element_is_not_visible('//div[contains(@class, "onetrust-pc-dark-filter")]',
+                                                           timeout=30)
+            logger.info('Overlay not found or disappeared')
+        except:
+            logger.info('Overlay still present, attempting to remove it with JavaScript')
+            self.browser.execute_javascript(
+                "document.querySelector('.onetrust-pc-dark-filter').style.display = 'none';")
+
     def get_news(self, search_phrase: str, category: str = None, months_to_download: int = 100) -> list[dict]:
         """
         This method will search for news on the AP News site based on the given parameters
@@ -52,15 +64,7 @@ class ApNewsSite(PageElement):
 
 
         # Handling the overlay
-        try:
-            logger.info('Checking for overlay')
-            self.browser.wait_until_element_is_not_visible('//div[contains(@class, "onetrust-pc-dark-filter")]',
-                                                           timeout=30)
-            logger.info('Overlay not found or disappeared')
-        except:
-            logger.info('Overlay still present, attempting to remove it with JavaScript')
-            self.browser.execute_javascript(
-                "document.querySelector('.onetrust-pc-dark-filter').style.display = 'none';")
+        self.handle_overlay()
 
         # Opening the search bar
         logger.info('Opening the search bar')
@@ -77,6 +81,10 @@ class ApNewsSite(PageElement):
 
         # filter by categories:
         logger.info('filtering by categories')
+        # Handling the overlay
+        self.handle_overlay()
+        self.browser.wait_until_element_is_visible("css:.SearchFilter-heading[data-toggle-trigger='search-filter']"
+                                                   , timeout=10)
         self.browser.click_element("css:.SearchFilter-heading[data-toggle-trigger='search-filter']")
         categorys_obj = self.browser.find_elements("css:.SearchFilterInput input[type='checkbox']")
         avalibles_categorys = [categorias.text for categorias in categorys_obj]
