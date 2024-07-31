@@ -1,6 +1,7 @@
 from RPA.Excel.Files import Files
 from logs_handler import logger
 
+
 class ExcelHandler:
     def __init__(self):
         self.lib = Files()

@@ -6,6 +6,7 @@ from datetime import datetime
 from abc import ABC  # I'' using to specify that the class is abstract
 from logs_handler import logger
 
+
 # Abstract class to handle the page elements with selenium
 class PageElement(ABC):
     def __init__(self):
@@ -57,13 +58,12 @@ class ApNewsSite(PageElement):
         except Exception as e:
             logger.critical('There was no popup on the screen')
 
-
         # Handling the overlay
         self.handle_overlay()
 
         # Opening the search bar
         logger.info('Opening the search bar')
-        #self.browser.execute_javascript("window.scrollBy(0, 1000);")
+        # self.browser.execute_javascript("window.scrollBy(0, 1000);")
         logger.info('Click Button search bar')
         self.browser.wait_until_element_is_visible('//button[@class="SearchOverlay-search-button"]', timeout=10)
         self.browser.click_element('//button[@class="SearchOverlay-search-button"]')
